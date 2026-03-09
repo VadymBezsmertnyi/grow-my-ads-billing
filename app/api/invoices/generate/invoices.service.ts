@@ -9,6 +9,11 @@ export const generateInvoice = async (input: GenerateInvoiceInputT) => {
     include: { plan: true },
   });
   if (!client) throw new ApiError("Client not found", 404);
+  if (client.isPaused)
+    throw new ApiError(
+      "Cannot generate invoice for paused subscription. Unpause the client first.",
+      400
+    );
 
   const billingMonthDate = new Date(input.billingMonth);
   const startOfMonth = new Date(

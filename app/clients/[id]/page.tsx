@@ -88,6 +88,18 @@ const ClientDetailPage: FC<ClientDetailPageProps> = async ({ params }) => {
               )}
             </dd>
           </div>
+          <div>
+            <dt className="text-sm text-zinc-600 dark:text-zinc-400">
+              Subscription paused
+            </dt>
+            <dd>
+              {client.isPaused ? (
+                <span className="text-amber-600 dark:text-amber-400">Yes</span>
+              ) : (
+                <span className="text-zinc-500">No</span>
+              )}
+            </dd>
+          </div>
         </dl>
       </section>
 

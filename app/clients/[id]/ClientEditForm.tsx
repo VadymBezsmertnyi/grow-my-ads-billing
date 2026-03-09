@@ -12,6 +12,7 @@ type Client = {
   email: string | null;
   discountPercent: number;
   isActive: boolean;
+  isPaused: boolean;
   plan: { id: string; name: string };
 };
 
@@ -31,6 +32,7 @@ const ClientEditForm: FC<ClientEditFormProps> = ({ client, plans }) => {
     String(client.discountPercent)
   );
   const [isActive, setIsActive] = useState(client.isActive);
+  const [isPaused, setIsPaused] = useState(client.isPaused);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -46,6 +48,7 @@ const ClientEditForm: FC<ClientEditFormProps> = ({ client, plans }) => {
           planId,
           discountPercent: Number(discountPercent) || 0,
           isActive,
+          isPaused,
         }),
       });
       if (!res.ok) {
@@ -66,6 +69,7 @@ const ClientEditForm: FC<ClientEditFormProps> = ({ client, plans }) => {
     setPlanId(client.plan.id);
     setDiscountPercent(String(client.discountPercent));
     setIsActive(client.isActive);
+    setIsPaused(client.isPaused);
   }, [client]);
 
   return (
@@ -146,6 +150,18 @@ const ClientEditForm: FC<ClientEditFormProps> = ({ client, plans }) => {
         />
         <label htmlFor="edit-isActive" className="text-sm font-medium">
           Active
+        </label>
+      </div>
+      <div className="flex items-center gap-2">
+        <input
+          id="edit-isPaused"
+          type="checkbox"
+          checked={isPaused}
+          onChange={(e) => setIsPaused(e.target.checked)}
+          className="rounded border-zinc-300"
+        />
+        <label htmlFor="edit-isPaused" className="text-sm font-medium">
+          Subscription paused
         </label>
       </div>
       <button

@@ -15,6 +15,7 @@ export const createClient = async (input: CreateClientInputT) => {
       planId: input.planId,
       discountPercent: input.discountPercent ?? 0,
       isActive: input.isActive ?? true,
+      isPaused: input.isPaused ?? false,
     },
   });
   return client;
@@ -75,6 +76,7 @@ export const updateClient = async (id: string, input: UpdateClientInputT) => {
   if (input.discountPercent !== undefined)
     data.discountPercent = input.discountPercent;
   if (input.isActive !== undefined) data.isActive = input.isActive;
+  if (input.isPaused !== undefined) data.isPaused = input.isPaused;
 
   return prisma.client.update({
     where: { id },

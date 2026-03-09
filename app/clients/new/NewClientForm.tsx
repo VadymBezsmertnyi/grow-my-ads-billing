@@ -18,6 +18,7 @@ const NewClientForm: FC = () => {
   const [planId, setPlanId] = useState("");
   const [discountPercent, setDiscountPercent] = useState("0");
   const [isActive, setIsActive] = useState(true);
+  const [isPaused, setIsPaused] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,6 +34,7 @@ const NewClientForm: FC = () => {
           planId,
           discountPercent: Number(discountPercent) || 0,
           isActive,
+          isPaused,
         }),
       });
       if (!res.ok) {
@@ -137,6 +139,18 @@ const NewClientForm: FC = () => {
         />
         <label htmlFor="isActive" className="text-sm font-medium">
           Active
+        </label>
+      </div>
+      <div className="flex items-center gap-2">
+        <input
+          id="isPaused"
+          type="checkbox"
+          checked={isPaused}
+          onChange={(e) => setIsPaused(e.target.checked)}
+          className="rounded border-zinc-300"
+        />
+        <label htmlFor="isPaused" className="text-sm font-medium">
+          Subscription paused
         </label>
       </div>
       <div className="flex gap-2">

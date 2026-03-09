@@ -88,6 +88,9 @@ const ClientsPage: FC<ClientsPageProps> = async ({ searchParams }) => {
               <th className="px-4 py-3 text-left text-sm font-medium text-zinc-900 dark:text-zinc-100">
                 Active
               </th>
+              <th className="px-4 py-3 text-left text-sm font-medium text-zinc-900 dark:text-zinc-100">
+                Paused
+              </th>
             </tr>
           </thead>
           <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800">
@@ -99,6 +102,7 @@ const ClientsPage: FC<ClientsPageProps> = async ({ searchParams }) => {
                 plan: { name: string };
                 discountPercent: number;
                 isActive: boolean;
+                isPaused: boolean;
               }) => (
                 <tr key={client.id}>
                   <td className="px-4 py-3">
@@ -121,6 +125,15 @@ const ClientsPage: FC<ClientsPageProps> = async ({ searchParams }) => {
                   <td className="px-4 py-3">
                     {client.isActive ? (
                       <span className="text-green-600 dark:text-green-400">
+                        Yes
+                      </span>
+                    ) : (
+                      <span className="text-zinc-500">No</span>
+                    )}
+                  </td>
+                  <td className="px-4 py-3">
+                    {client.isPaused ? (
+                      <span className="text-amber-600 dark:text-amber-400">
                         Yes
                       </span>
                     ) : (

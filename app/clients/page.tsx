@@ -1,3 +1,5 @@
+import { FC } from "react";
+
 import Link from "next/link";
 
 import { apiUrl } from "@/app/lib/api";
@@ -6,7 +8,7 @@ type ClientsPageProps = {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 };
 
-const ClientsPage = async ({ searchParams }: ClientsPageProps) => {
+const ClientsPage: FC<ClientsPageProps> = async ({ searchParams }) => {
   const params = await searchParams;
   const page = typeof params?.page === "string" ? params.page : "1";
   const limit = typeof params?.limit === "string" ? params.limit : "10";

@@ -1,6 +1,8 @@
+import { FC } from "react";
+
 import { apiUrl } from "@/app/lib/api";
 
-const DashboardPage = async () => {
+const DashboardPage: FC = async () => {
   const res = await fetch(apiUrl("/api/dashboard"), {
     cache: "no-store",
   });

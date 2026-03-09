@@ -11,6 +11,7 @@ export const listInvoices = async (query: ListInvoicesQueryT) => {
   const [items, total] = await Promise.all([
     prisma.invoice.findMany({
       where,
+      include: { client: { select: { name: true } } },
       orderBy: { createdAt: "desc" },
       skip: (page - 1) * limit,
       take: limit,

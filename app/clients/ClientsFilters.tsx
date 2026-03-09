@@ -10,6 +10,7 @@ type ClientsFiltersProps = {
   search: string;
   planId: string;
   isActive: string;
+  isPaused: string;
   limit: number;
   plans: Plan[];
 };
@@ -18,6 +19,7 @@ const ClientsFilters: FC<ClientsFiltersProps> = ({
   search,
   planId,
   isActive,
+  isPaused,
   limit,
   plans,
 }) => {
@@ -28,6 +30,7 @@ const ClientsFilters: FC<ClientsFiltersProps> = ({
     search?: string;
     planId?: string;
     isActive?: string;
+    isPaused?: string;
     limit?: number;
     page?: number;
   }) => {
@@ -37,14 +40,16 @@ const ClientsFilters: FC<ClientsFiltersProps> = ({
     const s = updates.search !== undefined ? updates.search : searchValue;
     const p = updates.planId !== undefined ? updates.planId : planId;
     const a = updates.isActive !== undefined ? updates.isActive : isActive;
+    const paused = updates.isPaused !== undefined ? updates.isPaused : isPaused;
     if (s) params.set("search", s);
     if (p) params.set("planId", p);
     if (a) params.set("isActive", a);
+    if (paused) params.set("isPaused", paused);
     return params.toString();
   };
 
   const updateFilter = (
-    key: "search" | "planId" | "isActive" | "limit",
+    key: "search" | "planId" | "isActive" | "isPaused" | "limit",
     value: string | number
   ) => {
     const str = String(value);
@@ -54,6 +59,7 @@ const ClientsFilters: FC<ClientsFiltersProps> = ({
     if (key === "search") updates.search = str;
     else if (key === "planId") updates.planId = str;
     else if (key === "isActive") updates.isActive = str;
+    else if (key === "isPaused") updates.isPaused = str;
     else if (key === "limit") {
       updates.limit = Number(str) || 10;
       updates.page = 1;
@@ -74,11 +80,12 @@ const ClientsFilters: FC<ClientsFiltersProps> = ({
         if (searchValue) params.set("search", searchValue);
         if (planId) params.set("planId", planId);
         if (isActive) params.set("isActive", isActive);
+        if (isPaused) params.set("isPaused", isPaused);
         router.push(`/clients?${params.toString()}`);
       }
     }, 400);
     return () => clearTimeout(t);
-  }, [searchValue, search, limit, planId, isActive, router]);
+  }, [searchValue, search, limit, planId, isActive, isPaused, router]);
 
   return (
     <div className="flex flex-wrap items-center gap-4">
@@ -121,6 +128,21 @@ const ClientsFilters: FC<ClientsFiltersProps> = ({
           id="isActive-filter"
           value={isActive}
           onChange={(e) => updateFilter("isActive", e.target.value)}
+          className="rounded border border-zinc-300 px-2 py-1 dark:border-zinc-700 dark:bg-zinc-900"
+        >
+          <option value="">All</option>
+          <option value="true">Yes</option>
+          <option value="false">No</option>
+        </select>
+      </div>
+      <div>
+        <label htmlFor="isPaused-filter" className="mr-2 text-sm">
+          Paused
+        </label>
+        <select
+          id="isPaused-filter"
+          value={isPaused}
+          onChange={(e) => updateFilter("isPaused", e.target.value)}
           className="rounded border border-zinc-300 px-2 py-1 dark:border-zinc-700 dark:bg-zinc-900"
         >
           <option value="">All</option>

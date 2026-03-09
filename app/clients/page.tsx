@@ -30,6 +30,7 @@ const buildClientsQuery = (query: {
   search?: string;
   planId?: string;
   isActive?: boolean;
+  isPaused?: boolean;
 }) => {
   const p = new URLSearchParams();
   p.set("page", String(query.page));
@@ -37,6 +38,7 @@ const buildClientsQuery = (query: {
   if (query.search) p.set("search", query.search);
   if (query.planId) p.set("planId", query.planId);
   if (query.isActive !== undefined) p.set("isActive", String(query.isActive));
+  if (query.isPaused !== undefined) p.set("isPaused", String(query.isPaused));
   return p.toString();
 };
 
@@ -48,6 +50,8 @@ const ClientsPage: FC<ClientsPageProps> = async ({ searchParams }) => {
 
   const isActiveStr =
     query.isActive === undefined ? "" : query.isActive ? "true" : "false";
+  const isPausedStr =
+    query.isPaused === undefined ? "" : query.isPaused ? "true" : "false";
 
   return (
     <div className="flex flex-col gap-6">
@@ -65,6 +69,7 @@ const ClientsPage: FC<ClientsPageProps> = async ({ searchParams }) => {
         search={query.search ?? ""}
         planId={query.planId ?? ""}
         isActive={isActiveStr}
+        isPaused={isPausedStr}
         limit={query.limit}
         plans={plans}
       />

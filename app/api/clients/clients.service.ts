@@ -28,7 +28,7 @@ export const createClient = async (input: CreateClientInputT) => {
 };
 
 export const listClients = async (query: ListClientsQueryT) => {
-  const { page, limit, search, planId, isActive } = query;
+  const { page, limit, search, planId, isActive, isPaused } = query;
   const where: Prisma.ClientWhereInput = {};
   if (search && search.trim()) {
     const term = search.trim();
@@ -39,6 +39,7 @@ export const listClients = async (query: ListClientsQueryT) => {
   }
   if (planId !== undefined) where.planId = planId;
   if (isActive !== undefined) where.isActive = isActive;
+  if (isPaused !== undefined) where.isPaused = isPaused;
 
   const [items, total] = await Promise.all([
     prisma.client.findMany({

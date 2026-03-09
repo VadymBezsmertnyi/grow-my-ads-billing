@@ -1,32 +1,25 @@
-import { NextResponse } from "next/server";
 import { prisma } from "@/src/lib/prisma";
 import { calculateInvoiceAmount } from "@/src/lib/billing";
+import type { GenerateInvoiceInput } from "./invoices.types";
 
-export async function POST(request: Request) {
-  const body = (await request.json()) as {
-    clientId: string;
-    adSpend: number;
-    billingMonth: string;
-  };
-  const { clientId, adSpend, billingMonth } = body;
+export const generateInvoice = async (input: GenerateInvoiceInput) => {
   const client = await prisma.client.findUnique({
-    where: { id: clientId },
+    where: { id: input.clientId },
     include: { plan: true },
   });
-  if (!client)
-    return NextResponse.json({ error: "Client not found" }, { status: 404 });
+  if (!client) return { success: false as const, error: "Client not found" };
 
   const { calculatedFee, finalFee } = calculateInvoiceAmount({
-    adSpend,
+    adSpend: input.adSpend,
     feeRate: client.plan.feeRate,
     minimumFee: client.plan.minimumFee,
     discountPercent: client.discountPercent,
   });
-  const billingMonthDate = new Date(billingMonth);
+  const billingMonthDate = new Date(input.billingMonth);
   const invoice = await prisma.invoice.create({
     data: {
-      clientId,
-      adSpend,
+      clientId: input.clientId,
+      adSpend: input.adSpend,
       billingMonth: billingMonthDate,
       feeRateSnapshot: client.plan.feeRate,
       minimumFeeSnapshot: client.plan.minimumFee,
@@ -37,5 +30,5 @@ export async function POST(request: Request) {
     },
   });
 
-  return NextResponse.json(invoice);
-}
+  return { success: true, invoice };
+};

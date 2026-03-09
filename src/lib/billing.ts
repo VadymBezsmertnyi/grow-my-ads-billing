@@ -10,13 +10,12 @@ export type CalculateInvoiceAmountResult = {
   finalFee: number;
 };
 
-function round2(value: number): number {
-  return Math.round(value * 100) / 100;
-}
+const round2 = (value: number): number =>
+  Math.round(value * 100) / 100;
 
-export function calculateInvoiceAmount(
+export const calculateInvoiceAmount = (
   input: CalculateInvoiceAmountInput
-): CalculateInvoiceAmountResult {
+): CalculateInvoiceAmountResult => {
   const { adSpend, feeRate, minimumFee, discountPercent } = input;
 
   const rawFee = adSpend * feeRate;
@@ -25,4 +24,4 @@ export function calculateInvoiceAmount(
   const finalFee = round2(calculatedFee - discountAmount);
 
   return { calculatedFee, finalFee };
-}
+};

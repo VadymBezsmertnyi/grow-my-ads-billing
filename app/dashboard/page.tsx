@@ -12,6 +12,8 @@ export const metadata: Metadata = {
 // helpers
 import { formatCurrency } from "@/app/helpers/currency.helpers";
 
+export const dynamic = "force-dynamic";
+
 const DashboardPage: FC = async () => {
   const data = await getDashboardStats();
 

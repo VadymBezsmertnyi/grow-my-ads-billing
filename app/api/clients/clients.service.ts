@@ -1,6 +1,11 @@
 import type { Prisma } from "@/app/generated/prisma/client";
 import { prisma } from "@/src/server/prisma";
-import type { CreateClientInputT, ListClientsQueryT } from "./clients.types";
+import { ApiError } from "@/src/server/api-handler";
+import type {
+  CreateClientInputT,
+  ListClientsQueryT,
+  UpdateClientInputT,
+} from "./clients.types";
 
 export const createClient = async (input: CreateClientInputT) => {
   const client = await prisma.client.create({
@@ -44,4 +49,34 @@ export const listClients = async (query: ListClientsQueryT) => {
     pages: Math.ceil(total / limit) || 1,
   };
   return { items, pagination };
+};
+
+export const getClientById = async (id: string) => {
+  const client = await prisma.client.findUnique({
+    where: { id },
+    include: {
+      plan: true,
+      invoices: { orderBy: { createdAt: "desc" } },
+    },
+  });
+  if (!client) throw new ApiError("Client not found", 404);
+  return client;
+};
+
+export const updateClient = async (id: string, input: UpdateClientInputT) => {
+  const existing = await prisma.client.findUnique({ where: { id } });
+  if (!existing) throw new ApiError("Client not found", 404);
+
+  const data: Prisma.ClientUncheckedUpdateInput = {};
+  if (input.name !== undefined) data.name = input.name;
+  if (input.email !== undefined) data.email = input.email;
+  if (input.planId !== undefined) data.planId = input.planId;
+  if (input.discountPercent !== undefined)
+    data.discountPercent = input.discountPercent;
+  if (input.isActive !== undefined) data.isActive = input.isActive;
+
+  return prisma.client.update({
+    where: { id },
+    data,
+  });
 };

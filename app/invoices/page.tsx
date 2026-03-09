@@ -10,10 +10,12 @@ import { listClients } from "@/app/api/clients/clients.service";
 import { listInvoices } from "@/app/api/invoices/invoices.service";
 
 // helpers
+import { formatCurrency } from "@/app/helpers/currency.helpers";
 import { formatDate, formatMonth } from "@/app/helpers/format.helpers";
 import { flattenSearchParams } from "@/app/helpers/search-params.helpers";
 
 // components
+import InvoiceStatusBadge from "@/app/components/InvoiceStatusBadge";
 import InvoiceStatusActions from "./InvoiceStatusActions";
 import InvoicesFilters from "./InvoicesFilters";
 
@@ -82,20 +84,12 @@ const InvoicesPage: FC<InvoicesPageProps> = async ({ searchParams }) => {
                 <td className="px-4 py-3 text-zinc-600 dark:text-zinc-400">
                   {formatMonth(invoice.billingMonth)}
                 </td>
-                <td className="px-4 py-3">{invoice.adSpend}</td>
-                <td className="px-4 py-3">{invoice.finalFee}</td>
+                <td className="px-4 py-3">{formatCurrency(invoice.adSpend)}</td>
                 <td className="px-4 py-3">
-                  <span
-                    className={
-                      invoice.status === "PAID"
-                        ? "text-green-600 dark:text-green-400"
-                        : invoice.status === "SENT"
-                          ? "text-blue-600 dark:text-blue-400"
-                          : "text-zinc-600 dark:text-zinc-400"
-                    }
-                  >
-                    {invoice.status}
-                  </span>
+                  {formatCurrency(invoice.finalFee)}
+                </td>
+                <td className="px-4 py-3">
+                  <InvoiceStatusBadge status={invoice.status} />
                 </td>
                 <td className="px-4 py-3 text-zinc-600 dark:text-zinc-400">
                   {formatDate(invoice.createdAt)}

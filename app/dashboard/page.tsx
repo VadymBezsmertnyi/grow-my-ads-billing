@@ -1,6 +1,10 @@
 import { FC } from "react";
 
+// api
 import { getDashboardStats } from "@/app/api/dashboard/dashboard.service";
+
+// helpers
+import { formatCurrency } from "@/app/helpers/currency.helpers";
 
 const DashboardPage: FC = async () => {
   const data = await getDashboardStats();
@@ -22,7 +26,7 @@ const DashboardPage: FC = async () => {
             Total invoiced this month
           </p>
           <p className="mt-1 text-2xl font-semibold">
-            {data.totalInvoicedCurrentMonth ?? 0}
+            {formatCurrency(data.totalInvoicedCurrentMonth ?? 0)}
           </p>
         </div>
         <div className="rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900">
@@ -30,7 +34,7 @@ const DashboardPage: FC = async () => {
             Average invoice amount this month
           </p>
           <p className="mt-1 text-2xl font-semibold">
-            {data.averageInvoiceAmountCurrentMonth ?? 0}
+            {formatCurrency(data.averageInvoiceAmountCurrentMonth ?? 0)}
           </p>
         </div>
       </div>

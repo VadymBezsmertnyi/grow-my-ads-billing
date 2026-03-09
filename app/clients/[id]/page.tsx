@@ -5,10 +5,12 @@ import Link from "next/link";
 import { listPlans } from "@/app/api/plans/plans.service";
 
 // helpers
+import { formatCurrency } from "@/app/helpers/currency.helpers";
 import { formatDate, formatMonth } from "@/app/helpers/format.helpers";
 import { fetchClientOrNull } from "./client-details.helpers";
 
 // components
+import InvoiceStatusBadge from "@/app/components/InvoiceStatusBadge";
 import ClientEditForm from "./ClientEditForm";
 import GenerateInvoiceForm from "./GenerateInvoiceForm";
 
@@ -122,20 +124,14 @@ const ClientDetailPage: FC<ClientDetailPageProps> = async ({ params }) => {
                     <td className="px-4 py-3 text-zinc-600 dark:text-zinc-400">
                       {formatMonth(invoice.billingMonth)}
                     </td>
-                    <td className="px-4 py-3">{invoice.adSpend}</td>
-                    <td className="px-4 py-3">{invoice.finalFee}</td>
                     <td className="px-4 py-3">
-                      <span
-                        className={
-                          invoice.status === "PAID"
-                            ? "text-green-600 dark:text-green-400"
-                            : invoice.status === "SENT"
-                              ? "text-blue-600 dark:text-blue-400"
-                              : "text-zinc-600 dark:text-zinc-400"
-                        }
-                      >
-                        {invoice.status}
-                      </span>
+                      {formatCurrency(invoice.adSpend)}
+                    </td>
+                    <td className="px-4 py-3">
+                      {formatCurrency(invoice.finalFee)}
+                    </td>
+                    <td className="px-4 py-3">
+                      <InvoiceStatusBadge status={invoice.status} />
                     </td>
                     <td className="px-4 py-3 text-zinc-600 dark:text-zinc-400">
                       {formatDate(invoice.createdAt)}

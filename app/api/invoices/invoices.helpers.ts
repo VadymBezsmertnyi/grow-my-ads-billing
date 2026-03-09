@@ -1,4 +1,4 @@
-import { ApiError } from "@/src/lib/api-handler";
+import { ApiError } from "@/src/server/api-handler";
 import type { InvoiceStatus } from "@/app/generated/prisma/enums";
 
 const TRANSITIONS: Record<InvoiceStatus, InvoiceStatus[]> = {

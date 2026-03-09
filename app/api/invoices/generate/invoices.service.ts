@@ -1,6 +1,6 @@
-import { prisma } from "@/src/lib/prisma";
-import { ApiError } from "@/src/lib/api-handler";
-import { calculateInvoiceAmount } from "@/src/lib/billing";
+import { prisma } from "@/src/server/prisma";
+import { ApiError } from "@/src/server/api-handler";
+import { calculateInvoiceAmount } from "@/src/server/billing";
 import type { GenerateInvoiceInput } from "./invoices.types";
 
 export const generateInvoice = async (input: GenerateInvoiceInput) => {

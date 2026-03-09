@@ -1,4 +1,4 @@
-import { apiHandler } from "@/src/lib/api-handler";
+import { apiHandler } from "@/src/server/api-handler";
 import { generateInvoiceSchema } from "./invoices.schemas";
 import { generateInvoice } from "./invoices.service";
 

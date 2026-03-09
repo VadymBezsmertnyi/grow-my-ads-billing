@@ -1,4 +1,4 @@
-import { apiHandler } from "@/src/lib/api-handler";
+import { apiHandler } from "@/src/server/api-handler";
 import { createClientSchema, listClientsQuerySchema } from "./clients.schemas";
 import { createClient, listClients } from "./clients.service";
 

@@ -1,4 +1,4 @@
-import { prisma } from "@/src/lib/prisma";
+import { prisma } from "@/src/server/prisma";
 
 export const listPlans = async () =>
   prisma.plan.findMany({

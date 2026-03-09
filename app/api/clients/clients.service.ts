@@ -1,5 +1,5 @@
 import type { Prisma } from "@/app/generated/prisma/client";
-import { prisma } from "@/src/lib/prisma";
+import { prisma } from "@/src/server/prisma";
 import type { CreateClientInput, ListClientsQuery } from "./clients.types";
 
 export const createClient = async (input: CreateClientInput) => {

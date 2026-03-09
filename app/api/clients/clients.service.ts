@@ -1,6 +1,5 @@
 import type { Prisma } from "@/app/generated/prisma/client";
 import { prisma } from "@/src/lib/prisma";
-import { getPaginationMeta } from "./clients.helpers";
 import type { CreateClientInput, ListClientsQuery } from "./clients.types";
 
 export const createClient = async (input: CreateClientInput) => {
@@ -38,6 +37,11 @@ export const listClients = async (query: ListClientsQuery) => {
     }),
     prisma.client.count({ where }),
   ]);
-  const pagination = getPaginationMeta(page, limit, total);
+  const pagination = {
+    page,
+    limit,
+    total,
+    pages: Math.ceil(total / limit) || 1,
+  };
   return { items, pagination };
 };

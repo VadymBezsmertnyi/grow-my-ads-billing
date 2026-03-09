@@ -1,5 +1,12 @@
 import { z } from "zod";
 
+export const createClientSchema = z.object({
+  name: z.string(),
+  email: z.string().optional(),
+  planId: z.string(),
+  discountPercent: z.number().optional(),
+});
+
 export const listClientsQuerySchema = z.object({
   page: z.coerce.number().int().min(1).default(1),
   limit: z.coerce.number().int().min(1).max(100).default(10),

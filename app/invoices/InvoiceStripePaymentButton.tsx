@@ -53,7 +53,6 @@ const InvoiceStripePaymentButton: FC<InvoiceStripePaymentButtonProps> = ({
     }
   };
 
-  if (!canCreate) return <span className="text-zinc-500">—</span>;
   if (stripePaymentIntentId)
     return (
       <div className="flex flex-col gap-0.5">
@@ -75,6 +74,7 @@ const InvoiceStripePaymentButton: FC<InvoiceStripePaymentButtonProps> = ({
         </div>
       </div>
     );
+  if (!canCreate) return <span className="text-zinc-500">—</span>;
   return (
     <div className="flex flex-col gap-1">
       <button

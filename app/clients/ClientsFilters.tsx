@@ -1,6 +1,6 @@
 "use client";
 
-import type { FC } from "react";
+import { FC, useEffect, useState } from "react";
 
 import { useRouter } from "next/navigation";
 
@@ -22,6 +22,7 @@ const ClientsFilters: FC<ClientsFiltersProps> = ({
   plans,
 }) => {
   const router = useRouter();
+  const [searchValue, setSearchValue] = useState(search);
 
   const buildParams = (updates: {
     search?: string;
@@ -33,7 +34,7 @@ const ClientsFilters: FC<ClientsFiltersProps> = ({
     const params = new URLSearchParams();
     params.set("page", String(updates.page ?? 1));
     params.set("limit", String(updates.limit ?? limit));
-    const s = updates.search !== undefined ? updates.search : search;
+    const s = updates.search !== undefined ? updates.search : searchValue;
     const p = updates.planId !== undefined ? updates.planId : planId;
     const a = updates.isActive !== undefined ? updates.isActive : isActive;
     if (s) params.set("search", s);
@@ -60,6 +61,25 @@ const ClientsFilters: FC<ClientsFiltersProps> = ({
     router.push(`/clients?${buildParams(updates)}`);
   };
 
+  useEffect(() => {
+    setSearchValue(search);
+  }, [search]);
+
+  useEffect(() => {
+    const t = setTimeout(() => {
+      if (searchValue !== search) {
+        const params = new URLSearchParams();
+        params.set("page", "1");
+        params.set("limit", String(limit));
+        if (searchValue) params.set("search", searchValue);
+        if (planId) params.set("planId", planId);
+        if (isActive) params.set("isActive", isActive);
+        router.push(`/clients?${params.toString()}`);
+      }
+    }, 400);
+    return () => clearTimeout(t);
+  }, [searchValue, search, limit, planId, isActive, router]);
+
   return (
     <div className="flex flex-wrap items-center gap-4">
       <div>
@@ -69,8 +89,8 @@ const ClientsFilters: FC<ClientsFiltersProps> = ({
         <input
           id="search-filter"
           type="text"
-          value={search}
-          onChange={(e) => updateFilter("search", e.target.value)}
+          value={searchValue}
+          onChange={(e) => setSearchValue(e.target.value)}
           placeholder="Name or email"
           className="rounded border border-zinc-300 px-2 py-1 dark:border-zinc-700 dark:bg-zinc-900"
         />

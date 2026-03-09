@@ -32,14 +32,6 @@ const ClientEditForm: FC<ClientEditFormProps> = ({ client, plans }) => {
   );
   const [isActive, setIsActive] = useState(client.isActive);
 
-  useEffect(() => {
-    setName(client.name);
-    setEmail(client.email ?? "");
-    setPlanId(client.plan.id);
-    setDiscountPercent(String(client.discountPercent));
-    setIsActive(client.isActive);
-  }, [client]);
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
@@ -67,6 +59,14 @@ const ClientEditForm: FC<ClientEditFormProps> = ({ client, plans }) => {
       setSubmitting(false);
     }
   };
+
+  useEffect(() => {
+    setName(client.name);
+    setEmail(client.email ?? "");
+    setPlanId(client.plan.id);
+    setDiscountPercent(String(client.discountPercent));
+    setIsActive(client.isActive);
+  }, [client]);
 
   return (
     <form onSubmit={handleSubmit} className="flex max-w-md flex-col gap-4">

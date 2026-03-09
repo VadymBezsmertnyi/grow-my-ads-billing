@@ -2,7 +2,6 @@
 
 import type { FC } from "react";
 import { useEffect, useState } from "react";
-
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
@@ -19,16 +18,6 @@ const NewClientForm: FC = () => {
   const [planId, setPlanId] = useState("");
   const [discountPercent, setDiscountPercent] = useState("0");
   const [isActive, setIsActive] = useState(true);
-
-  useEffect(() => {
-    fetch("/api/plans")
-      .then((res) => res.json())
-      .then((data) => {
-        setPlans(data);
-        if (data[0]) setPlanId(data[0].id);
-      })
-      .finally(() => setLoading(false));
-  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -59,10 +48,17 @@ const NewClientForm: FC = () => {
     }
   };
 
-  if (loading) {
-    return <p className="text-zinc-600">Loading plans…</p>;
-  }
+  useEffect(() => {
+    fetch("/api/plans")
+      .then((res) => res.json())
+      .then((data) => {
+        setPlans(data);
+        if (data[0]) setPlanId(data[0].id);
+      })
+      .finally(() => setLoading(false));
+  }, []);
 
+  if (loading) return <p className="text-zinc-600">Loading plans…</p>;
   return (
     <form onSubmit={handleSubmit} className="flex max-w-md flex-col gap-4">
       {error && (

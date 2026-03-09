@@ -5,6 +5,7 @@ export const createClientSchema = z.object({
   email: z.string().optional(),
   planId: z.string(),
   discountPercent: z.number().optional(),
+  isActive: z.boolean().optional(),
 });
 
 export const updateClientSchema = z.object({

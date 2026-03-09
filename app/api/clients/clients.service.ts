@@ -14,6 +14,7 @@ export const createClient = async (input: CreateClientInputT) => {
       email: input.email,
       planId: input.planId,
       discountPercent: input.discountPercent ?? 0,
+      isActive: input.isActive ?? true,
     },
   });
   return client;

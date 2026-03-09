@@ -115,6 +115,7 @@ const InvoicesPage: FC<InvoicesPageProps> = async ({ searchParams }) => {
                   <InvoiceStripePaymentButton
                     invoiceId={invoice.id}
                     status={invoice.status}
+                    stripePaymentIntentId={invoice.stripePaymentIntentId}
                   />
                 </td>
               </tr>

@@ -173,6 +173,7 @@ const ClientDetailPage: FC<ClientDetailPageProps> = async ({ params }) => {
                       <InvoiceStripePaymentButton
                         invoiceId={invoice.id}
                         status={invoice.status}
+                        stripePaymentIntentId={invoice.stripePaymentIntentId}
                       />
                     </td>
                   </tr>

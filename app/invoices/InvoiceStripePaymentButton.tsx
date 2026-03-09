@@ -7,24 +7,24 @@ import { useRouter } from "next/navigation";
 type InvoiceStripePaymentButtonProps = {
   invoiceId: string;
   status: string;
+  stripePaymentIntentId?: string | null;
 };
 
 const InvoiceStripePaymentButton: FC<InvoiceStripePaymentButtonProps> = ({
   invoiceId,
   status,
+  stripePaymentIntentId,
 }) => {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
 
   const canCreate = status === "DRAFT" || status === "SENT";
-  if (!canCreate) return <span className="text-zinc-500">—</span>;
 
   const handleClick = async () => {
     setLoading(true);
     setError(null);
-    setSuccess(null);
     try {
       const res = await fetch(`/api/invoices/${invoiceId}/payment-intent`, {
         method: "POST",
@@ -33,7 +33,6 @@ const InvoiceStripePaymentButton: FC<InvoiceStripePaymentButtonProps> = ({
       if (!res.ok) {
         throw new Error(data?.error ?? "Failed to create payment intent");
       }
-      setSuccess(`Payment intent created: ${data.paymentIntentId}`);
       router.refresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong");
@@ -42,6 +41,40 @@ const InvoiceStripePaymentButton: FC<InvoiceStripePaymentButtonProps> = ({
     }
   };
 
+  const handleCopy = async () => {
+    if (!stripePaymentIntentId) return;
+
+    try {
+      await navigator.clipboard.writeText(stripePaymentIntentId);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    } catch {
+      setCopied(false);
+    }
+  };
+
+  if (!canCreate) return <span className="text-zinc-500">—</span>;
+  if (stripePaymentIntentId)
+    return (
+      <div className="flex flex-col gap-0.5">
+        <span className="text-xs text-zinc-600 dark:text-zinc-400">
+          Payment intent
+        </span>
+        <div className="flex items-center gap-1">
+          <span className="text-xs font-mono text-zinc-900 dark:text-zinc-100">
+            {stripePaymentIntentId}
+          </span>
+          <button
+            type="button"
+            onClick={handleCopy}
+            className="rounded px-1.5 py-0.5 text-xs text-zinc-600 hover:bg-zinc-200 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-700 dark:hover:text-zinc-100"
+            title="Copy"
+          >
+            {copied ? "Copied" : "Copy"}
+          </button>
+        </div>
+      </div>
+    );
   return (
     <div className="flex flex-col gap-1">
       <button
@@ -52,11 +85,6 @@ const InvoiceStripePaymentButton: FC<InvoiceStripePaymentButtonProps> = ({
       >
         {loading ? "…" : "Create Stripe Payment"}
       </button>
-      {success && (
-        <span className="text-xs text-green-600 dark:text-green-400">
-          {success}
-        </span>
-      )}
       {error && (
         <span className="text-xs text-red-600 dark:text-red-400">{error}</span>
       )}

@@ -142,7 +142,9 @@ const ClientsPage: FC<ClientsPageProps> = async ({ searchParams }) => {
                         Yes
                       </span>
                     ) : (
-                      <span className="text-zinc-500">No</span>
+                      <span className="text-zinc-600 dark:text-zinc-400">
+                        No
+                      </span>
                     )}
                   </td>
                 </tr>

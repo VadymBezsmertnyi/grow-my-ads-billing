@@ -1,9 +1,16 @@
+import type { Metadata } from "next";
 import { FC } from "react";
 import Link from "next/link";
 
 // schemas
 import { listClientsQuerySchema } from "@/app/api/clients/clients.schemas";
 import { listInvoicesQuerySchema } from "@/app/api/invoices/invoices.schemas";
+
+export const metadata: Metadata = {
+  title: "Invoices",
+  description:
+    "View and manage invoices. Filter by status and client, update status.",
+};
 
 // api
 import { listClients } from "@/app/api/clients/clients.service";

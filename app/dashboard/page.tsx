@@ -1,7 +1,13 @@
+import type { Metadata } from "next";
 import { FC } from "react";
 
 // api
 import { getDashboardStats } from "@/app/api/dashboard/dashboard.service";
+
+export const metadata: Metadata = {
+  title: "Dashboard",
+  description: "Overview of active clients, invoicing totals, and averages.",
+};
 
 // helpers
 import { formatCurrency } from "@/app/helpers/currency.helpers";

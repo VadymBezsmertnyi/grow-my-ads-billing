@@ -1,6 +1,12 @@
+import type { Metadata } from "next";
 import { FC } from "react";
 
 import Link from "next/link";
+
+export const metadata: Metadata = {
+  title: "Home",
+  description: "Billing management for Grow My Ads. Overview and navigation.",
+};
 
 const HomePage: FC = () => (
   <div className="flex flex-col gap-6">

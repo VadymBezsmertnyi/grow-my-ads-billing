@@ -1,8 +1,15 @@
+import type { Metadata } from "next";
 import { FC } from "react";
 import Link from "next/link";
 
 // api
 import { listPlans } from "@/app/api/plans/plans.service";
+
+export const metadata: Metadata = {
+  title: "Client",
+  description:
+    "View and edit client details, generate invoices, and view invoice history.",
+};
 
 // helpers
 import { formatCurrency } from "@/app/helpers/currency.helpers";

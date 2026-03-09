@@ -1,8 +1,13 @@
+import type { Metadata } from "next";
 import { FC } from "react";
-
 import Link from "next/link";
 
 import NewClientForm from "./NewClientForm";
+
+export const metadata: Metadata = {
+  title: "New Client",
+  description: "Create a new client and assign a plan.",
+};
 
 const NewClientPage: FC = () => (
   <div className="flex flex-col gap-6">

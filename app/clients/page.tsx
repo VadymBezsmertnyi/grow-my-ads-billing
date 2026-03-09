@@ -1,8 +1,14 @@
+import type { Metadata } from "next";
 import { FC } from "react";
 import Link from "next/link";
 
 // schemas
 import { listClientsQuerySchema } from "@/app/api/clients/clients.schemas";
+
+export const metadata: Metadata = {
+  title: "Clients",
+  description: "Manage clients, assign plans, and set discounts.",
+};
 
 // api
 import { listClients } from "@/app/api/clients/clients.service";

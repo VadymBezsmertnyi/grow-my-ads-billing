@@ -16,8 +16,12 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Grow My Ads Billing",
-  description: "Grow My Ads Billing",
+  title: {
+    default: "Grow My Ads Billing",
+    template: "%s | Grow My Ads Billing",
+  },
+  description:
+    "Billing management for Grow My Ads. Manage clients, plans, and invoices.",
 };
 
 type RootLayoutProps = {

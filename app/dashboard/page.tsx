@@ -1,12 +1,9 @@
 import { FC } from "react";
 
-import { apiUrl } from "@/app/lib/api";
+import { getDashboardStats } from "@/app/api/dashboard/dashboard.service";
 
 const DashboardPage: FC = async () => {
-  const res = await fetch(apiUrl("/api/dashboard"), {
-    cache: "no-store",
-  });
-  const data = await res.json();
+  const data = await getDashboardStats();
 
   return (
     <div className="flex flex-col gap-6">

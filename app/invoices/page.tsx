@@ -2,21 +2,13 @@ import { FC } from "react";
 
 import Link from "next/link";
 
-import { apiUrl } from "@/app/lib/api";
+import { listClientsQuerySchema } from "@/app/api/clients/clients.schemas";
+import { listClients } from "@/app/api/clients/clients.service";
+import { listInvoicesQuerySchema } from "@/app/api/invoices/invoices.schemas";
+import { listInvoices } from "@/app/api/invoices/invoices.service";
 
 import InvoiceStatusActions from "./InvoiceStatusActions";
 import InvoicesFilters from "./InvoicesFilters";
-
-type Invoice = {
-  id: string;
-  clientId: string;
-  billingMonth: string;
-  adSpend: number;
-  finalFee: number;
-  status: string;
-  createdAt: string;
-  client?: { name: string };
-};
 
 type Client = { id: string; name: string };
 
@@ -24,44 +16,44 @@ type InvoicesPageProps = {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 };
 
-const formatDate = (dateStr: string) =>
-  new Date(dateStr).toLocaleDateString("en-US", {
+const formatDate = (d: string | Date) =>
+  (typeof d === "string" ? new Date(d) : d).toLocaleDateString("en-US", {
     year: "numeric",
     month: "short",
     day: "numeric",
   });
 
-const formatMonth = (dateStr: string) =>
-  new Date(dateStr).toLocaleDateString("en-US", {
+const formatMonth = (d: string | Date) =>
+  (typeof d === "string" ? new Date(d) : d).toLocaleDateString("en-US", {
     year: "numeric",
     month: "long",
   });
 
 const InvoicesPage: FC<InvoicesPageProps> = async ({ searchParams }) => {
   const params = await searchParams;
-  const page = typeof params?.page === "string" ? params.page : "1";
-  const limit = typeof params?.limit === "string" ? params.limit : "10";
-  const status = typeof params?.status === "string" ? params.status : "";
-  const clientId = typeof params?.clientId === "string" ? params.clientId : "";
+  const flatParams = Object.fromEntries(
+    Object.entries(params ?? {}).map(([k, v]) => [
+      k,
+      Array.isArray(v) ? v[0] : v,
+    ])
+  );
+  const query = listInvoicesQuerySchema.parse(flatParams);
 
-  const query = new URLSearchParams({ page, limit });
-  if (status) query.set("status", status);
-  if (clientId) query.set("clientId", clientId);
-
-  const [invoicesRes, clientsRes] = await Promise.all([
-    fetch(apiUrl(`/api/invoices?${query}`), { cache: "no-store" }),
-    fetch(apiUrl("/api/clients?limit=100"), { cache: "no-store" }),
+  const clientsQuery = listClientsQuerySchema.parse({ page: 1, limit: 100 });
+  const [{ items, pagination }, { items: clients }] = await Promise.all([
+    listInvoices(query),
+    listClients(clientsQuery),
   ]);
-
-  const { items, pagination } = await invoicesRes.json();
-  const clientsData = await clientsRes.json();
-  const clients: Client[] = clientsData.items ?? [];
 
   return (
     <div className="flex flex-col gap-6">
       <h1 className="text-2xl font-semibold">Invoices</h1>
 
-      <InvoicesFilters status={status} clientId={clientId} clients={clients} />
+      <InvoicesFilters
+        status={query.status ?? ""}
+        clientId={query.clientId ?? ""}
+        clients={clients ?? []}
+      />
 
       <div className="overflow-x-auto rounded-lg border border-zinc-200 dark:border-zinc-800">
         <table className="min-w-full divide-y divide-zinc-200 dark:divide-zinc-800">
@@ -91,7 +83,7 @@ const InvoicesPage: FC<InvoicesPageProps> = async ({ searchParams }) => {
             </tr>
           </thead>
           <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800">
-            {items?.map((invoice: Invoice) => (
+            {items?.map((invoice) => (
               <tr key={invoice.id}>
                 <td className="px-4 py-3">
                   <Link
@@ -144,8 +136,8 @@ const InvoicesPage: FC<InvoicesPageProps> = async ({ searchParams }) => {
             <Link
               href={
                 `/invoices?page=${pagination.page - 1}&limit=${pagination.limit}` +
-                (status ? `&status=${status}` : "") +
-                (clientId ? `&clientId=${clientId}` : "")
+                (query.status ? `&status=${query.status}` : "") +
+                (query.clientId ? `&clientId=${query.clientId}` : "")
               }
               className="rounded border border-zinc-300 px-3 py-1 hover:bg-zinc-100 dark:border-zinc-700 dark:hover:bg-zinc-800"
             >
@@ -160,8 +152,8 @@ const InvoicesPage: FC<InvoicesPageProps> = async ({ searchParams }) => {
             <Link
               href={
                 `/invoices?page=${pagination.page + 1}&limit=${pagination.limit}` +
-                (status ? `&status=${status}` : "") +
-                (clientId ? `&clientId=${clientId}` : "")
+                (query.status ? `&status=${query.status}` : "") +
+                (query.clientId ? `&clientId=${query.clientId}` : "")
               }
               className="rounded border border-zinc-300 px-3 py-1 hover:bg-zinc-100 dark:border-zinc-700 dark:hover:bg-zinc-800"
             >

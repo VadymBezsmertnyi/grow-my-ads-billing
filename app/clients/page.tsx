@@ -2,7 +2,8 @@ import { FC } from "react";
 
 import Link from "next/link";
 
-import { apiUrl } from "@/app/lib/api";
+import { listClientsQuerySchema } from "@/app/api/clients/clients.schemas";
+import { listClients } from "@/app/api/clients/clients.service";
 
 type ClientsPageProps = {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
@@ -10,13 +11,15 @@ type ClientsPageProps = {
 
 const ClientsPage: FC<ClientsPageProps> = async ({ searchParams }) => {
   const params = await searchParams;
-  const page = typeof params?.page === "string" ? params.page : "1";
-  const limit = typeof params?.limit === "string" ? params.limit : "10";
-
-  const res = await fetch(apiUrl(`/api/clients?page=${page}&limit=${limit}`), {
-    cache: "no-store",
-  });
-  const { items, pagination } = await res.json();
+  const query = listClientsQuerySchema.parse(
+    Object.fromEntries(
+      Object.entries(params ?? {}).map(([k, v]) => [
+        k,
+        Array.isArray(v) ? v[0] : v,
+      ])
+    )
+  );
+  const { items, pagination } = await listClients(query);
 
   return (
     <div className="flex flex-col gap-6">

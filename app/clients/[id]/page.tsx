@@ -2,72 +2,61 @@ import { FC } from "react";
 
 import Link from "next/link";
 
-import { apiUrl } from "@/app/lib/api";
+import { ApiError } from "@/src/server/api-handler";
+import { getClientById } from "@/app/api/clients/clients.service";
+import { listPlans } from "@/app/api/plans/plans.service";
 
 import ClientEditForm from "./ClientEditForm";
 import GenerateInvoiceForm from "./GenerateInvoiceForm";
-
-type Invoice = {
-  id: string;
-  billingMonth: string;
-  adSpend: number;
-  finalFee: number;
-  status: string;
-  createdAt: string;
-};
-
-type Plan = { id: string; name: string };
-
-type Client = {
-  id: string;
-  name: string;
-  email: string | null;
-  discountPercent: number;
-  isActive: boolean;
-  plan: Plan;
-  invoices: Invoice[];
-};
 
 type ClientDetailPageProps = {
   params: Promise<{ id: string }>;
 };
 
-const formatDate = (dateStr: string) =>
-  new Date(dateStr).toLocaleDateString("en-US", {
+type ClientT = Awaited<ReturnType<typeof getClientById>>;
+
+const fetchClientOrNull = async (id: string): Promise<ClientT | null> => {
+  try {
+    return await getClientById(id);
+  } catch (err) {
+    if (err instanceof ApiError && err.status === 404) return null;
+    throw err;
+  }
+};
+
+const formatDate = (d: string | Date) =>
+  (typeof d === "string" ? new Date(d) : d).toLocaleDateString("en-US", {
     year: "numeric",
     month: "short",
     day: "numeric",
   });
 
-const formatMonth = (dateStr: string) =>
-  new Date(dateStr).toLocaleDateString("en-US", {
+const formatMonth = (d: string | Date) =>
+  (typeof d === "string" ? new Date(d) : d).toLocaleDateString("en-US", {
     year: "numeric",
     month: "long",
   });
 
+const ClientNotFound = () => (
+  <div className="flex flex-col gap-4">
+    <Link
+      href="/clients"
+      className="text-sm text-zinc-600 hover:text-zinc-900 dark:hover:text-zinc-100"
+    >
+      ← Back to clients
+    </Link>
+    <p className="text-red-600">Client not found.</p>
+  </div>
+);
+
 const ClientDetailPage: FC<ClientDetailPageProps> = async ({ params }) => {
   const { id } = await params;
-  const [clientRes, plansRes] = await Promise.all([
-    fetch(apiUrl(`/api/clients/${id}`), { cache: "no-store" }),
-    fetch(apiUrl("/api/plans"), { cache: "no-store" }),
+  const [client, plans] = await Promise.all([
+    fetchClientOrNull(id),
+    listPlans(),
   ]);
 
-  if (!clientRes.ok) {
-    return (
-      <div className="flex flex-col gap-4">
-        <Link
-          href="/clients"
-          className="text-sm text-zinc-600 hover:text-zinc-900 dark:hover:text-zinc-100"
-        >
-          ← Back to clients
-        </Link>
-        <p className="text-red-600">Client not found.</p>
-      </div>
-    );
-  }
-
-  const client: Client = await clientRes.json();
-  const plans: Plan[] = await plansRes.json();
+  if (!client) return <ClientNotFound />;
 
   return (
     <div className="flex flex-col gap-8">

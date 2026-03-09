@@ -1,43 +1,29 @@
 import { FC } from "react";
-
 import Link from "next/link";
 
+// schemas
 import { listClientsQuerySchema } from "@/app/api/clients/clients.schemas";
-import { listClients } from "@/app/api/clients/clients.service";
 import { listInvoicesQuerySchema } from "@/app/api/invoices/invoices.schemas";
+
+// api
+import { listClients } from "@/app/api/clients/clients.service";
 import { listInvoices } from "@/app/api/invoices/invoices.service";
 
+// helpers
+import { formatDate, formatMonth } from "@/app/helpers/format.helpers";
+import { flattenSearchParams } from "@/app/helpers/search-params.helpers";
+
+// components
 import InvoiceStatusActions from "./InvoiceStatusActions";
 import InvoicesFilters from "./InvoicesFilters";
-
-type Client = { id: string; name: string };
 
 type InvoicesPageProps = {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 };
 
-const formatDate = (d: string | Date) =>
-  (typeof d === "string" ? new Date(d) : d).toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  });
-
-const formatMonth = (d: string | Date) =>
-  (typeof d === "string" ? new Date(d) : d).toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "long",
-  });
-
 const InvoicesPage: FC<InvoicesPageProps> = async ({ searchParams }) => {
   const params = await searchParams;
-  const flatParams = Object.fromEntries(
-    Object.entries(params ?? {}).map(([k, v]) => [
-      k,
-      Array.isArray(v) ? v[0] : v,
-    ])
-  );
-  const query = listInvoicesQuerySchema.parse(flatParams);
+  const query = listInvoicesQuerySchema.parse(flattenSearchParams(params));
 
   const clientsQuery = listClientsQuerySchema.parse({ page: 1, limit: 100 });
   const [{ items, pagination }, { items: clients }] = await Promise.all([

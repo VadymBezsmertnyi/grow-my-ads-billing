@@ -1,41 +1,20 @@
 import { FC } from "react";
-
 import Link from "next/link";
 
-import { ApiError } from "@/src/server/api-handler";
-import { getClientById } from "@/app/api/clients/clients.service";
+// api
 import { listPlans } from "@/app/api/plans/plans.service";
 
+// helpers
+import { formatDate, formatMonth } from "@/app/helpers/format.helpers";
+import { fetchClientOrNull } from "./client-details.helpers";
+
+// components
 import ClientEditForm from "./ClientEditForm";
 import GenerateInvoiceForm from "./GenerateInvoiceForm";
 
 type ClientDetailPageProps = {
   params: Promise<{ id: string }>;
 };
-
-type ClientT = Awaited<ReturnType<typeof getClientById>>;
-
-const fetchClientOrNull = async (id: string): Promise<ClientT | null> => {
-  try {
-    return await getClientById(id);
-  } catch (err) {
-    if (err instanceof ApiError && err.status === 404) return null;
-    throw err;
-  }
-};
-
-const formatDate = (d: string | Date) =>
-  (typeof d === "string" ? new Date(d) : d).toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  });
-
-const formatMonth = (d: string | Date) =>
-  (typeof d === "string" ? new Date(d) : d).toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "long",
-  });
 
 const ClientNotFound = () => (
   <div className="flex flex-col gap-4">

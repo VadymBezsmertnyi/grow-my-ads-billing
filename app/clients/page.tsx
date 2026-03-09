@@ -1,9 +1,14 @@
 import { FC } from "react";
-
 import Link from "next/link";
 
+// schemas
 import { listClientsQuerySchema } from "@/app/api/clients/clients.schemas";
+
+// api
 import { listClients } from "@/app/api/clients/clients.service";
+
+// helpers
+import { flattenSearchParams } from "@/app/helpers/search-params.helpers";
 
 type ClientsPageProps = {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
@@ -11,14 +16,7 @@ type ClientsPageProps = {
 
 const ClientsPage: FC<ClientsPageProps> = async ({ searchParams }) => {
   const params = await searchParams;
-  const query = listClientsQuerySchema.parse(
-    Object.fromEntries(
-      Object.entries(params ?? {}).map(([k, v]) => [
-        k,
-        Array.isArray(v) ? v[0] : v,
-      ])
-    )
-  );
+  const query = listClientsQuerySchema.parse(flattenSearchParams(params));
   const { items, pagination } = await listClients(query);
 
   return (

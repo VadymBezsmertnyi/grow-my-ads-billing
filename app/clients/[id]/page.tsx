@@ -18,6 +18,7 @@ import { fetchClientOrNull } from "./client-details.helpers";
 
 // components
 import InvoiceStatusBadge from "@/app/components/InvoiceStatusBadge";
+import InvoiceStripePaymentButton from "@/app/invoices/InvoiceStripePaymentButton";
 import ClientEditForm from "./ClientEditForm";
 import GenerateInvoiceForm from "./GenerateInvoiceForm";
 
@@ -145,6 +146,9 @@ const ClientDetailPage: FC<ClientDetailPageProps> = async ({ params }) => {
                   <th className="px-4 py-3 text-left text-sm font-medium text-zinc-900 dark:text-zinc-100">
                     Created
                   </th>
+                  <th className="px-4 py-3 text-left text-sm font-medium text-zinc-900 dark:text-zinc-100">
+                    Actions
+                  </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800">
@@ -164,6 +168,12 @@ const ClientDetailPage: FC<ClientDetailPageProps> = async ({ params }) => {
                     </td>
                     <td className="px-4 py-3 text-zinc-600 dark:text-zinc-400">
                       {formatDate(invoice.createdAt)}
+                    </td>
+                    <td className="px-4 py-3">
+                      <InvoiceStripePaymentButton
+                        invoiceId={invoice.id}
+                        status={invoice.status}
+                      />
                     </td>
                   </tr>
                 ))}

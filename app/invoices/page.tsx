@@ -24,6 +24,7 @@ import { flattenSearchParams } from "@/app/helpers/search-params.helpers";
 // components
 import InvoiceStatusBadge from "@/app/components/InvoiceStatusBadge";
 import InvoiceStatusActions from "./InvoiceStatusActions";
+import InvoiceStripePaymentButton from "./InvoiceStripePaymentButton";
 import InvoicesFilters from "./InvoicesFilters";
 
 type InvoicesPageProps = {
@@ -75,6 +76,9 @@ const InvoicesPage: FC<InvoicesPageProps> = async ({ searchParams }) => {
               <th className="px-4 py-3 text-left text-sm font-medium text-zinc-900 dark:text-zinc-100">
                 Actions
               </th>
+              <th className="px-4 py-3 text-left text-sm font-medium text-zinc-900 dark:text-zinc-100">
+                Stripe
+              </th>
             </tr>
           </thead>
           <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800">
@@ -103,6 +107,12 @@ const InvoicesPage: FC<InvoicesPageProps> = async ({ searchParams }) => {
                 </td>
                 <td className="px-4 py-3">
                   <InvoiceStatusActions
+                    invoiceId={invoice.id}
+                    status={invoice.status}
+                  />
+                </td>
+                <td className="px-4 py-3">
+                  <InvoiceStripePaymentButton
                     invoiceId={invoice.id}
                     status={invoice.status}
                   />

@@ -19,6 +19,7 @@ const NewClientForm: FC = () => {
   const [discountPercent, setDiscountPercent] = useState("0");
   const [isActive, setIsActive] = useState(true);
   const [isPaused, setIsPaused] = useState(false);
+  const [subscriptionStartDate, setSubscriptionStartDate] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,6 +36,7 @@ const NewClientForm: FC = () => {
           discountPercent: Number(discountPercent) || 0,
           isActive,
           isPaused,
+          subscriptionStartDate: subscriptionStartDate || null,
         }),
       });
       if (!res.ok) {
@@ -152,6 +154,21 @@ const NewClientForm: FC = () => {
         <label htmlFor="isPaused" className="text-sm font-medium">
           Subscription paused
         </label>
+      </div>
+      <div>
+        <label
+          htmlFor="subscriptionStartDate"
+          className="mb-1 block text-sm font-medium"
+        >
+          Subscription start date
+        </label>
+        <input
+          id="subscriptionStartDate"
+          type="date"
+          value={subscriptionStartDate}
+          onChange={(e) => setSubscriptionStartDate(e.target.value)}
+          className="w-full rounded border border-zinc-300 px-3 py-2 dark:border-zinc-700 dark:bg-zinc-900"
+        />
       </div>
       <div className="flex gap-2">
         <button

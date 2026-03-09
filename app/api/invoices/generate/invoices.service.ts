@@ -39,10 +39,34 @@ export const generateInvoice = async (input: GenerateInvoiceInputT) => {
       400
     );
 
+  const invoiceCount = await prisma.invoice.count({
+    where: { clientId: input.clientId },
+  });
+  const isFirstInvoice = invoiceCount === 0;
+
+  let feeRate = client.plan.feeRate;
+  let minimumFee = client.plan.minimumFee;
+
+  if (
+    isFirstInvoice &&
+    client.subscriptionStartDate &&
+    client.subscriptionStartDate >= startOfMonth &&
+    client.subscriptionStartDate < endOfMonth
+  ) {
+    const year = startOfMonth.getFullYear();
+    const month = startOfMonth.getMonth();
+    const totalDaysInMonth = new Date(year, month + 1, 0).getDate();
+    const startDay = client.subscriptionStartDate.getDate();
+    const remainingDaysInMonth = totalDaysInMonth - startDay + 1;
+    const prorationRatio = remainingDaysInMonth / totalDaysInMonth;
+    feeRate *= prorationRatio;
+    minimumFee *= prorationRatio;
+  }
+
   const { calculatedFee, finalFee } = calculateInvoiceAmount({
     adSpend: input.adSpend,
-    feeRate: client.plan.feeRate,
-    minimumFee: client.plan.minimumFee,
+    feeRate,
+    minimumFee,
     discountPercent: client.discountPercent,
   });
   const invoice = await prisma.invoice.create({
@@ -50,8 +74,8 @@ export const generateInvoice = async (input: GenerateInvoiceInputT) => {
       clientId: input.clientId,
       adSpend: input.adSpend,
       billingMonth: startOfMonth,
-      feeRateSnapshot: client.plan.feeRate,
-      minimumFeeSnapshot: client.plan.minimumFee,
+      feeRateSnapshot: feeRate,
+      minimumFeeSnapshot: minimumFee,
       discountSnapshot: client.discountPercent,
       calculatedFee,
       finalFee,

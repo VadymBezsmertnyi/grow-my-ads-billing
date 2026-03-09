@@ -100,6 +100,16 @@ const ClientDetailPage: FC<ClientDetailPageProps> = async ({ params }) => {
               )}
             </dd>
           </div>
+          <div>
+            <dt className="text-sm text-zinc-600 dark:text-zinc-400">
+              Subscription start date
+            </dt>
+            <dd>
+              {client.subscriptionStartDate
+                ? formatDate(client.subscriptionStartDate)
+                : "—"}
+            </dd>
+          </div>
         </dl>
       </section>
 

@@ -13,6 +13,7 @@ type Client = {
   discountPercent: number;
   isActive: boolean;
   isPaused: boolean;
+  subscriptionStartDate: Date | null;
   plan: { id: string; name: string };
 };
 
@@ -33,6 +34,11 @@ const ClientEditForm: FC<ClientEditFormProps> = ({ client, plans }) => {
   );
   const [isActive, setIsActive] = useState(client.isActive);
   const [isPaused, setIsPaused] = useState(client.isPaused);
+  const [subscriptionStartDate, setSubscriptionStartDate] = useState(
+    client.subscriptionStartDate
+      ? client.subscriptionStartDate.toISOString().slice(0, 10)
+      : ""
+  );
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -49,6 +55,7 @@ const ClientEditForm: FC<ClientEditFormProps> = ({ client, plans }) => {
           discountPercent: Number(discountPercent) || 0,
           isActive,
           isPaused,
+          subscriptionStartDate: subscriptionStartDate || null,
         }),
       });
       if (!res.ok) {
@@ -70,6 +77,11 @@ const ClientEditForm: FC<ClientEditFormProps> = ({ client, plans }) => {
     setDiscountPercent(String(client.discountPercent));
     setIsActive(client.isActive);
     setIsPaused(client.isPaused);
+    setSubscriptionStartDate(
+      client.subscriptionStartDate
+        ? client.subscriptionStartDate.toISOString().slice(0, 10)
+        : ""
+    );
   }, [client]);
 
   return (
@@ -163,6 +175,21 @@ const ClientEditForm: FC<ClientEditFormProps> = ({ client, plans }) => {
         <label htmlFor="edit-isPaused" className="text-sm font-medium">
           Subscription paused
         </label>
+      </div>
+      <div>
+        <label
+          htmlFor="edit-subscriptionStartDate"
+          className="mb-1 block text-sm font-medium"
+        >
+          Subscription start date
+        </label>
+        <input
+          id="edit-subscriptionStartDate"
+          type="date"
+          value={subscriptionStartDate}
+          onChange={(e) => setSubscriptionStartDate(e.target.value)}
+          className="w-full rounded border border-zinc-300 px-3 py-2 dark:border-zinc-700 dark:bg-zinc-900"
+        />
       </div>
       <button
         type="submit"

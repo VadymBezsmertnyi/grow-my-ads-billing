@@ -7,6 +7,7 @@ export const createClientSchema = z.object({
   discountPercent: z.number().optional(),
   isActive: z.boolean().optional(),
   isPaused: z.boolean().optional(),
+  subscriptionStartDate: z.string().optional().nullable(),
 });
 
 export const updateClientSchema = z.object({
@@ -16,6 +17,7 @@ export const updateClientSchema = z.object({
   discountPercent: z.number().optional(),
   isActive: z.boolean().optional(),
   isPaused: z.boolean().optional(),
+  subscriptionStartDate: z.string().optional().nullable(),
 });
 
 export const listClientsQuerySchema = z.object({

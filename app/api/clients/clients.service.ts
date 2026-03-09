@@ -8,6 +8,11 @@ import type {
 } from "./clients.types";
 
 export const createClient = async (input: CreateClientInputT) => {
+  const subscriptionStartDate =
+    input.subscriptionStartDate != null && input.subscriptionStartDate.trim()
+      ? new Date(input.subscriptionStartDate)
+      : null;
+
   const client = await prisma.client.create({
     data: {
       name: input.name,
@@ -16,6 +21,7 @@ export const createClient = async (input: CreateClientInputT) => {
       discountPercent: input.discountPercent ?? 0,
       isActive: input.isActive ?? true,
       isPaused: input.isPaused ?? false,
+      subscriptionStartDate,
     },
   });
   return client;
@@ -77,6 +83,11 @@ export const updateClient = async (id: string, input: UpdateClientInputT) => {
     data.discountPercent = input.discountPercent;
   if (input.isActive !== undefined) data.isActive = input.isActive;
   if (input.isPaused !== undefined) data.isPaused = input.isPaused;
+  if (input.subscriptionStartDate !== undefined)
+    data.subscriptionStartDate =
+      input.subscriptionStartDate != null && input.subscriptionStartDate.trim()
+        ? new Date(input.subscriptionStartDate)
+        : null;
 
   return prisma.client.update({
     where: { id },

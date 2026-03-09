@@ -1,4 +1,5 @@
 import { prisma } from "@/src/lib/prisma";
+import { ApiError } from "@/src/lib/api-handler";
 import { calculateInvoiceAmount } from "@/src/lib/billing";
 import type { GenerateInvoiceInput } from "./invoices.types";
 
@@ -7,7 +8,7 @@ export const generateInvoice = async (input: GenerateInvoiceInput) => {
     where: { id: input.clientId },
     include: { plan: true },
   });
-  if (!client) return { success: false as const, error: "Client not found" };
+  if (!client) throw new ApiError("Client not found", 404);
 
   const { calculatedFee, finalFee } = calculateInvoiceAmount({
     adSpend: input.adSpend,
@@ -30,5 +31,5 @@ export const generateInvoice = async (input: GenerateInvoiceInput) => {
     },
   });
 
-  return { success: true, invoice };
+  return invoice;
 };

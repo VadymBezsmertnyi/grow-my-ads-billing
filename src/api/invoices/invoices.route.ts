@@ -1,12 +1,12 @@
-import { NextResponse } from "next/server";
+import { apiHandler } from "@/src/lib/api-handler";
 import { generateInvoiceSchema } from "./invoices.schemas";
 import { generateInvoice } from "./invoices.service";
 
-export const POST = async (request: Request) => {
-  const body = generateInvoiceSchema.parse(await request.json());
-  const result = await generateInvoice(body);
-  if (!result.success)
-    return NextResponse.json({ error: result.error }, { status: 404 });
-
-  return NextResponse.json(result.invoice);
-};
+export const POST = async (request: Request) =>
+  apiHandler(
+    async () => {
+      const body = generateInvoiceSchema.parse(await request.json());
+      return generateInvoice(body);
+    },
+    { successStatus: 201 }
+  );

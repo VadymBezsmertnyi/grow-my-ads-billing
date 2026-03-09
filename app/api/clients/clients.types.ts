@@ -4,5 +4,5 @@ import type {
   listClientsQuerySchema,
 } from "./clients.schemas";
 
-export type CreateClientInput = z.infer<typeof createClientSchema>;
-export type ListClientsQuery = z.infer<typeof listClientsQuerySchema>;
+export type CreateClientInputT = z.infer<typeof createClientSchema>;
+export type ListClientsQueryT = z.infer<typeof listClientsQuerySchema>;

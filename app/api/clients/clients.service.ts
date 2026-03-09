@@ -1,8 +1,8 @@
 import type { Prisma } from "@/app/generated/prisma/client";
 import { prisma } from "@/src/server/prisma";
-import type { CreateClientInput, ListClientsQuery } from "./clients.types";
+import type { CreateClientInputT, ListClientsQueryT } from "./clients.types";
 
-export const createClient = async (input: CreateClientInput) => {
+export const createClient = async (input: CreateClientInputT) => {
   const client = await prisma.client.create({
     data: {
       name: input.name,
@@ -14,7 +14,7 @@ export const createClient = async (input: CreateClientInput) => {
   return client;
 };
 
-export const listClients = async (query: ListClientsQuery) => {
+export const listClients = async (query: ListClientsQueryT) => {
   const { page, limit, search, planId, isActive } = query;
   const where: Prisma.ClientWhereInput = {};
   if (search && search.trim()) {

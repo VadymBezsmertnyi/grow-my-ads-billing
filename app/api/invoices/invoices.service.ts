@@ -1,8 +1,8 @@
 import type { Prisma } from "@/app/generated/prisma/client";
 import { prisma } from "@/src/server/prisma";
-import { ListInvoicesQuery } from "./invoices.types";
+import type { ListInvoicesQueryT } from "./invoices.types";
 
-export const listInvoices = async (query: ListInvoicesQuery) => {
+export const listInvoices = async (query: ListInvoicesQueryT) => {
   const { page, limit, clientId, status } = query;
   const where: Prisma.InvoiceWhereInput = {};
   if (clientId !== undefined) where.clientId = clientId;

@@ -1,9 +1,9 @@
 import { prisma } from "@/src/server/prisma";
 import { ApiError } from "@/src/server/api-handler";
 import { calculateInvoiceAmount } from "@/src/server/billing";
-import type { GenerateInvoiceInput } from "./invoices.types";
+import type { GenerateInvoiceInputT } from "./invoices.types";
 
-export const generateInvoice = async (input: GenerateInvoiceInput) => {
+export const generateInvoice = async (input: GenerateInvoiceInputT) => {
   const client = await prisma.client.findUnique({
     where: { id: input.clientId },
     include: { plan: true },

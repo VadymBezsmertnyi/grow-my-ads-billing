@@ -12,13 +12,13 @@ export class ApiError extends Error {
   }
 }
 
-type ApiHandlerOptions = {
+type ApiHandlerOptionsT = {
   successStatus?: number;
 };
 
 export const apiHandler = async <T>(
   handler: () => Promise<T>,
-  options: ApiHandlerOptions = {}
+  options: ApiHandlerOptionsT = {}
 ): Promise<NextResponse> => {
   const { successStatus = 200 } = options;
 
